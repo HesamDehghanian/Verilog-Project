@@ -1,0 +1,132 @@
+module fsm_1 (
+ input    rst,
+ input    clk,
+ input [2:0] action,
+ input [2:0] action_2,
+ input [2:0] loc_2,
+ output reg [2:0] loc,
+ output reg [2:0] state,
+ output reg [1:0] health
+);
+
+ parameter move_left = 3'b000;
+ parameter move_right = 3'b001;
+ parameter jump = 3'b010;
+ parameter waitt = 3'b011;
+ parameter punch = 3'b100;
+ parameter kick = 3'b101;
+
+ reg [1:0] healt = 2'b10;
+ reg [2:0] location = 3'b000;
+ reg [1:0] flag = 2'b00;
+
+ always @(posedge clk or posedge rst) begin
+    if (~rst) begin
+        health <= 2'b00;
+        loc <= 3'b000;
+        flag <= 2'b00;
+		  state <= 3'b000;
+    end else begin
+       // healt <= 2'b11;
+       // location <= 3'b000;
+       // flag <= 2'b00;
+
+        case(action)
+            move_left:
+              begin
+                if (location > 3'b000)
+                    location <= location - 1;
+                state <= action;
+                loc <= location;
+                health <= healt;
+              end
+            move_right:
+              begin
+                if (location < 3'b010)
+                    location <= location + 1;
+                state <= action;
+                loc <= location;
+                health <= healt;
+              end
+            jump:
+              begin
+                state <= action;
+                loc <= location;
+                health <= healt;
+              end
+            waitt:
+              begin
+                state <= action;
+					 loc <= location;
+                flag <= flag + 1;
+                if ((flag == 2'b10))
+                begin
+						if(healt < 3)
+							healt <= healt + 2'b01;
+                 flag <= 2'b00;
+                end
+                health <= healt;
+              end
+            punch:
+              begin
+                state <= action;
+                loc <= location;
+                health <= healt;
+              end
+            kick:
+              begin
+                state <= action;
+                loc <= location;
+                health <= healt;
+              end
+        endcase
+
+        if (loc_2 - location == 3'b001)
+        begin
+            case(action_2)
+              punch:
+                begin
+                    if (action == punch)
+                        location <= location - 1;
+                    if (action == waitt | action == kick)
+                        healt <= (healt >= 2'b10) ? healt - 2'b10 : 2'b00;
+                    else
+                        healt <= healt;
+                    state <= action;
+                    loc <= location;
+                    health <= healt;
+                end
+              kick:
+                begin
+                    if (action == kick)
+                        location <= location - 1;
+                    if (action == waitt)
+                        healt <= (healt > 2'b00) ? healt - 2'b01 : 2'b00;
+                    else
+                        healt <= healt;
+                    state <= action;
+                    loc <= location;
+                    health <= healt;
+                end
+            endcase
+        end
+        else if (loc_2 - location == 3'b010)
+        begin
+            case(action_2)
+              kick:
+                begin
+                    if (action == kick)
+                        location <= location - 1;
+                    if (action == waitt)
+                        healt <= (healt > 2'b00) ? healt - 2'b01 : 2'b00;
+                    else
+                        healt <= healt;
+                    state <= action;
+                    loc <= location;
+                    health <= healt;
+                end
+            endcase
+        end
+    end
+ end
+endmodule

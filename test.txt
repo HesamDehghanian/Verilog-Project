@@ -1,0 +1,95 @@
+`timescale 1ns / 1ps
+
+////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer:
+//
+// Create Date:   20:56:41 01/08/2024
+// Design Name:   game
+// Module Name:   C:/Users/Simurgh/Desktop/project/test/game_test.v
+// Project Name:  test
+// Target Device:  
+// Tool versions:  
+// Description: 
+//
+// Verilog Test Fixture created by ISE for module: game
+//
+// Dependencies:
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+////////////////////////////////////////////////////////////////////////////////
+
+module game_test;
+
+	// Inputs
+	reg clk;
+	reg rst;
+	reg [2:0] action_1;
+	reg [2:0] action_2;
+
+	// Outputs
+	wire [2:0] loc_1;
+	wire [2:0] loc_2;
+	wire [1:0] health_1;
+	wire [1:0] health_2;
+	wire [2:0] state_1;
+	wire [2:0] state_2;
+	 
+
+	// Instantiate the Unit Under Test (UUT)
+	game uut (
+		.clk(clk), 
+		.rst(rst),
+		.action_1(action_1), 
+		.action_2(action_2), 
+		.loc_1(loc_1), 
+		.loc_2(loc_2), 
+		.health_1(health_1),  
+		.health_2(health_2),
+		.state_1(state_1),
+		.state_2(state_2)
+	);
+	
+	initial begin
+	  clk = 0;
+			repeat (100)
+	   #40 clk = ~clk;
+	end
+	
+
+	initial begin
+		#80;
+		rst = 1'b1;
+		action_1 = 3'b001;
+		action_2 = 3'b000;
+		#80;
+		rst = 1'b1;
+		action_1 = 3'b001;
+		action_2 = 3'b000;
+		#80;
+		rst = 1'b0;
+		action_1 = 3'b100;
+		action_2 = 3'b101;
+		#80;
+		rst = 1'b1;
+		action_1 = 3'b100;
+		action_2 = 3'b100;
+		#80;
+		rst = 1'b1;
+		action_1 = 3'b101;
+		action_2 = 3'b001;
+		#80;
+		
+		
+		
+		
+
+
+
+	end
+      
+endmodule
+

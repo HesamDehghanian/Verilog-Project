@@ -1,0 +1,132 @@
+module fsm_2 (
+  input      rst,
+  input      clk,
+  input [2:0] action,
+  input [2:0] action_1,
+  input [2:0] loc_1,
+  output reg [2:0] loc,
+  output reg [2:0] state,
+  output reg [1:0] health
+);
+
+  parameter move_left = 3'b000;
+  parameter move_right = 3'b001;
+  parameter jump = 3'b010;
+  parameter waitt = 3'b011;
+  parameter punch = 3'b100;
+  parameter kick = 3'b101;
+
+  reg [1:0] healt = 2'b11;
+  reg [2:0] location = 3'b101;
+  reg [1:0] flag = 2'b00;
+
+  always @(posedge clk or posedge rst) begin
+      if (~rst) begin
+          health <= 2'b00;
+          loc <= 3'b000;
+          flag <= 2'b00;
+			 state <= 3'b000;
+      end else begin
+         // healt <= healt;
+          //loc <= location;
+          //flag <= flag;
+
+          case(action)
+              move_left:
+                begin
+                    if (location > 3'b011)
+                        location <= location - 1;
+                    state <= action;
+                    loc <= location;
+                    health <= healt;
+                end
+              move_right:
+                begin
+                    if (location < 3'b101)
+                        location <= location + 1;
+                    state <= action;
+                    loc <= location;
+                    health <= healt;
+                end
+              jump:
+                begin
+                    state <= action;
+                    loc <= location;
+                    health <= healt;
+                end
+              waitt:
+                begin
+                state <= action;
+                flag <= flag + 1;
+                if ((flag == 2'b10))
+                begin
+						if(healt < 3)
+							healt <= healt + 2'b01;
+                 flag <= 2'b00;
+                end
+                loc <= location;
+                health <= healt;
+              end
+              punch:
+                begin
+                    state <= punch;
+                    loc <= location;
+                    health <= healt;
+                end
+              kick:
+                begin
+                    state <= kick;
+                    loc <= location;
+                    health <= healt;
+                end
+          endcase
+
+          if (location - loc_1 == 3'b001)
+          begin
+              case(action_1)
+                punch:
+                    begin
+                        if (action == 3'b100)
+                            location <= location + 1;
+                        if (action == 3'b101 || action == 3'b011)
+                            healt <= (healt > 2'b01) ? healt - 2'b10 : 2'b00;
+                        else
+                            healt <= healt;
+                        state <= action;
+                        loc <= location;
+                        health <= healt;
+                    end
+                kick:
+                    begin
+                        if (action == 3'b101)
+                            location <= location + 1;
+                        if (action == 3'b011)
+                            healt <= (healt > 2'b00) ? healt - 2'b01 : 2'b00;
+                        else
+                            healt <= healt;
+                        state <= action;
+                        loc <= location;
+                        health <= healt;
+                    end
+              endcase
+          end
+          else if (location - loc_1 == 3'b010)
+          begin
+              case(action_1)
+                kick:
+                    begin
+                        if (action == 3'b101)
+                            location <= location + 1;
+                        if (action == 3'b011)
+                            healt <= (healt > 2'b00) ? healt - 2'b01 : 2'b00;
+                        else
+                            healt <= healt;
+                        state <= action;
+                        loc <= location;
+                        health <= healt;
+                    end
+              endcase
+          end
+      end
+  end
+endmodule

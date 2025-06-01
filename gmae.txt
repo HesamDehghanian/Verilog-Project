@@ -1,0 +1,54 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    20:42:58 01/08/2024 
+// Design Name: 
+// Module Name:    game 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+module game(
+	 input        rst,
+    input        clk,
+    input  [2:0] action_1,
+    input  [2:0] action_2,
+    output  [2:0] loc_1,
+    output  [2:0] loc_2,
+    output  [1:0] health_1,
+	 output  [1:0] health_2,
+	 output [2:0] state_1,
+	 output  [2:0] state_2
+	 
+    );
+	 wire [2:0]location_1;
+	 wire [2:0]location_2; 
+	 wire [2:0] stat_1;
+	 wire [2:0] stat_2;
+	 wire [1:0] healt_1;
+	 wire [1:0] healt_2;
+	 
+	 fsm_1 player_1(rst,clk,action_1,action_2,loc_2,loc_1,stat_1,health_1);
+	 fsm_2 player_2(rst,clk,action_2,action_1,loc_1,loc_2,stat_2,health_2);
+	 //register_health f_1(1,clk,1,healt_1,health_1);
+	 //register_health f_2(1,clk,1,healt_2,health_2);
+	 //register_loc ff_1(1, clk,1,location_1,loc_1);
+	 //register_loc ff_2(1, clk,1,location_2,loc_2);
+	 
+	 assign state_1 = stat_1;
+	 assign state_2 = stat_2;
+	 
+	 
+
+
+endmodule
